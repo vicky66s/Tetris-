@@ -1,0 +1,142 @@
+unit Unit1;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.Buttons, Math;
+
+type
+  TForm1 = class(TForm)
+    Timer1: TTimer;
+    Label1: TLabel;
+    procedure FormCreate(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure Timer1Timer(Sender: TObject);
+    procedure FormPaint(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
+  private
+    { Private declarations }
+    Board: array[0..19, 0..9] of Integer;
+    Piece: array[0..3, 0..3] of Integer;
+    PieceX, PieceY: Integer;
+    procedure NewPiece;
+    procedure DrawBoard;
+    procedure UpdatePiece;
+    procedure ClearLines;
+    procedure MovePieceDown;
+    procedure MovePieceLeft;
+    procedure MovePieceRight;
+  public
+    { Public declarations }
+  end;
+
+var
+  Form1: TForm1;
+
+implementation
+
+{$R *.dfm}
+
+procedure TForm1.NewPiece;
+begin
+  PieceX := 4;
+  PieceY := 0;
+  // Example of a piece (L piece)
+  Piece := [
+    [0, 0, 0, 0],
+    [1, 1, 1, 1],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0]
+  ];
+end;
+
+procedure TForm1.DrawBoard;
+var
+  i, j: Integer;
+begin
+  Canvas.Brush.Color := clWhite;
+  Canvas.FillRect(ClientRect);
+  for i := 0 to 19 do
+    for j := 0 to 9 do
+    begin
+      if Board[i, j] = 1 then
+      begin
+        Canvas.Brush.Color := clBlue;
+        Canvas.Rectangle(j * 30, i * 30, (j + 1) * 30, (i + 1) * 30);
+      end;
+    end;
+end;
+
+procedure TForm1.UpdatePiece;
+var
+  i, j: Integer;
+begin
+  for i := 0 to 3 do
+    for j := 0 to 3 do
+    begin
+      if Piece[i, j] = 1 then
+      begin
+        Board[PieceY + i, PieceX + j] := 1;
+      end;
+    end;
+end;
+
+procedure TForm1.ClearLines;
+var
+  i, j: Integer;
+  isRowFull: Boolean;
+begin
+  for i := 19 downto 0 do
+  begin
+    isRowFull := True;
+    for j := 0 to 9 do
+    begin
+      if Board[i, j] = 0 then
+      begin
+        isRowFull := False;
+        Break;
+      end;
+    end;
+    if isRowFull then
+    begin
+      for j := i downto 1 do
+      begin
+        for k := 0 to 9 do
+        begin
+          Board[j, k] := Board[j - 1, k];
+        end;
+      end;
+      for j := 0 to 9 do
+      begin
+        Board[0, j] := 0;
+      end;
+    end;
+  end;
+end;
+
+procedure TForm1.MovePieceDown;
+begin
+  Inc(PieceY);
+  if (PieceY + 4) > 20 then
+  begin
+    UpdatePiece;
+    ClearLines;
+    NewPiece;
+  end;
+end;
+
+procedure TForm1.MovePieceLeft;
+begin
+  if PieceX > 0 then
+    Dec(PieceX);
+end;
+
+procedure TForm1.MovePieceRight;
+begin
+  if PieceX < 6 then // Adjust this value depending on the piece size
+    Inc(PieceX);
+end;
+
+procedure TForm1.FormCreate(Sender: TObject);
+b
