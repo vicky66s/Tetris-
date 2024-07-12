@@ -131,7 +131,7 @@ end;
 
 procedure TForm1.MovePieceRight;
 begin
-  if PieceX < 6 then // Adjust this value depending on the piece size
+  if PieceX < 6 then // Adjust this value depending on the piece size .
     Inc(PieceX);
 end;
 
