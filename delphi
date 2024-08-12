@@ -1,4 +1,4 @@
-unit Unit1;
+unit Unit;
 interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
